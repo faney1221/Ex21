@@ -8,6 +8,7 @@ import java.io.Serializable;
  *
  */
 public class Map implements Map2D, Serializable{
+    private int [][] map;
 
     // edit this class below
 	/**
@@ -16,13 +17,14 @@ public class Map implements Map2D, Serializable{
 	 * @param h
 	 * @param v
 	 */
-	public Map(int w, int h, int v) {init(w, h, v);}
+	public Map(int w, int h, int v) {
+        init(w, h, v);}
 	/**
 	 * Constructs a square map (size*size).
 	 * @param size
 	 */
 	public Map(int size) {this(size,size, 0);}
-	
+
 	/**
 	 * Constructs a map from a given 2D array.
 	 * @param data
@@ -31,57 +33,68 @@ public class Map implements Map2D, Serializable{
 		init(data);
 	}
 	@Override
-	public void init(int w, int h, int v) {
-
+	public void init(int w, int h, int v) {map = new int [w][h];
+        for (int x=0;x<w;x++) {
+            for (int y = 0; y < h; y++) {
+                map[x][y] = v;
+            }
+        }
 	}
 	@Override
 	public void init(int[][] arr) {
+        int w = arr.length;
+        int h = arr[0].length;
+        map = new int [w][h];
+        for (int x=0;x<w;x++) {
+            for (int y = 0; y < h; y++) {
+                map[x][y] = arr[x][y];
+            }
+        }
 
 	}
 	@Override
 	public int[][] getMap() {
-		int[][] ans = null;
+		int w=getWidth();
+        int h=getHeight();
+        int[][] ans = new int[w][h];
+        for (int x=0;x<w;x++) {
+            for (int y = 0; y < h; y++) {
+                ans[x][y] = map[x][y];
+            }
+        }
 
 		return ans;
 	}
 	@Override
 	public int getWidth() {
-        int ans = -1;
-
-        return ans;
+        return map.length;
     }
 	@Override
 	public int getHeight() {
-        int ans = -1;
-
-        return ans;
+        return map[0].length;
     }
 	@Override
 	public int getPixel(int x, int y) {
-        int ans = -1;
-
-        return ans;
+        return  map[x][y] ;
     }
 	@Override
 	public int getPixel(Pixel2D p) {
-        int ans = -1;
-
-        return ans;
+        return getPixel(p.getX(), p.getY());
 	}
 	@Override
 	public void setPixel(int x, int y, int v) {
-
+     map[x][y] = v;
     }
 	@Override
 	public void setPixel(Pixel2D p, int v) {
-
+     setPixel(p.getX(), p.getY(), v);
 	}
 
     @Override
     public boolean isInside(Pixel2D p) {
-        boolean ans = true;
-
-        return ans;
+        int x = p.getX();
+        int y = p.getY();
+        return x >= 0 &&  y >= 0 && x<getWidth()&&  y < getHeight();
     }
 
     @Override
@@ -93,6 +106,7 @@ public class Map implements Map2D, Serializable{
 
     @Override
     public void addMap2D(Map2D p) {
+
 
     }
 
@@ -128,7 +142,7 @@ public class Map implements Map2D, Serializable{
         return ans;
     }
 	@Override
-	/** 
+	/**
 	 * Fills this map with the new color (new_v) starting from p.
 	 * https://en.wikipedia.org/wiki/Flood_fill
 	 */
