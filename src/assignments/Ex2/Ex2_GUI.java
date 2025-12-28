@@ -47,50 +47,63 @@ StdDraw.show();
      * @param mapFileName
      * @return
      *
+     *read a Map2D object from file that was previosly saved
+     * algortem:- open file , look for a file on disk, throw exception if not found
+     * creat object reader ,prper to read sertilaized object , can throw exception if file corrupted
+     *  read object, reconstract the map2D object from bytes, rutern type object ,so we cast to map2D ,throw exception if saved class doesn't match
+     *  reaturn map eathier loded map or newely created defult
      */
     public static Map2D loadMap(String mapFileName) {
         Map2D ans = null;
+        // step  try to open and read the file
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(mapFileName))) {
+            // step 2 read the object and cast to Map2D type
             ans = (Map2D) ois.readObject();
             System.out.println("Map loaded successfully from: " + mapFileName);
         } catch (FileNotFoundException e) {
             System.err.println("File not found: " + mapFileName);
-            // Create a default map if file doesn't exist
+            //  step 3 Create a default map if file doesn't exist
             ans = createDefaultMap();
         } catch (IOException | ClassNotFoundException e) {
+            // step 4 other error creat defult
             System.err.println("Error loading map: " + e.getMessage());
             ans = createDefaultMap();
         }
 
-        return ans;
+        return ans; // return loded or defult map
     }
 
     /**
      *
      * @param map
      * @param mapFileName
+     *
+     * the purpose of this function is save the entire Map2D object to file so it can be loded later
      */
     public static void saveMap(Map2D map, String mapFileName) {
+        //  step 1 check if map exsits
         if (map==null) {
             System.out.println("err,map is null");
-            return;
+            return; // can't save noting
         }
+        // step 2 open file for writting
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(mapFileName))) {
+            // step 3 write the entire object to file
             oos.writeObject(map);
             System.out.println("Map saved successfully to: " + mapFileName);
         } catch (IOException e) {
+            // step 4 handele error
             System.err.println("Error saving map: " + e.getMessage());
         }
-
-
     }
     public static void main(String[] a) {
         String mapFile = "map.txt";
-        Map2D map = loadMap(mapFile);
-        saveMap(map, mapFile);
+        Map2D map = loadMap(mapFile); // loeds or creat
+        saveMap(map, mapFile); // saved it
         drawMap(map);
     }
     /// ///////////// Private functions ///////////////
+    ///  colors
 
     private static Color getColorFromValue(int value) {
         switch (value) {
@@ -124,6 +137,8 @@ StdDraw.show();
     /**
      * Creates a default map for testing
      * @return Map2D with some default content
+     * draw 100 by using draw line and circle
+     *
      */
     private static Map2D createDefaultMap() {
         System.out.println("Creating default map with '100' displayed...");
